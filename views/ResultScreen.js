@@ -1,11 +1,6 @@
 import { useNavigation } from '@react-navigation/native';
-<<<<<<< HEAD
 import { useEffect, useState } from 'react';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-=======
-import React, { useState, useEffect } from 'react';
-import { Text, View, StyleSheet, Image, TouchableOpacity } from 'react-native';
->>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
 
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
@@ -14,11 +9,7 @@ import axios from "axios";
 const ResultScreen = ({ params, route }) => {
 
     //ĐỊA CHỈ IP ------------------------------------//
-<<<<<<< HEAD
     const apiAddress = 'http://192.168.1.190:5555/api';
-=======
-    const apiAddress = 'http://192.168.0.104:5555/api';
->>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
     //-----------------------------------------------//
 
     const DATA_DiemHocLuc = route.params?.DATA_DiemHocLuc;
