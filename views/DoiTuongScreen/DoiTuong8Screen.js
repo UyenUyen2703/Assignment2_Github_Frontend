@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Picker } from "@react-native-picker/picker"
-
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { styles } from './DoiTuongScreenStyleSheet';
 
 import toHopMonData from './ToHopMon.json';
@@ -15,11 +15,15 @@ const DoiTuong8Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
             [index]: value,
         }));
     };
- 
+
     useEffect(() => {
         setDATA_DiemHocLuc(null)
         handleUpdateDATA('doiTuong', 8)
-        handleUpdateDATA('chungChiQuocTe', 'SAT')
+        if (nganh != null) {
+            handleUpdateDATA('danhSachToHopMon', nganh.toHopMon)
+            handleUpdateDATA('danhSachMon', layDanhSachMon(nganh))
+        }
+
     }, []);
 
     const nganhXetTuyen = nganhXetTuyenData;
@@ -28,8 +32,34 @@ const DoiTuong8Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
     const [nganh, setNganh] = useState(null);
 
     let monBatBuoc_List = [];
-    let monTuChon_List = [];
+    const [monTuChon_List, setMonTuChon_List] = useState([]);
     let monTatCa_List = [];
+
+    const [monTuChon_List_Picked, setMonTuChon_List_Picked] = useState([]);
+
+    const [diemTuChonModalVisible, setDiemTuChonModalVisible] = useState(false);
+    const handleDiemTuChonList = (choice) => {
+        setDiemTuChonModalVisible(false);
+        setMonTuChon_List_Picked([...monTuChon_List_Picked, choice]);
+        let newList = removeMonTuChonFromList(choice)
+        setMonTuChon_List(newList)
+    };
+
+    function removeMonTuChonFromList(choice) {
+        const index = monTuChon_List.indexOf(choice);
+        if (index > -1) {
+            monTuChon_List.splice(index, 1);
+        }
+        return monTuChon_List;
+    }
+
+    function removeMonTuChonFromList_Picked(choice) {
+        const index = monTuChon_List_Picked.indexOf(choice);
+        if (index > -1) {
+            monTuChon_List_Picked.splice(index, 1);
+        }
+        return monTuChon_List_Picked;
+    }
 
     function layDanhSachMon(nganh) {
         if (!nganh) return [];
@@ -40,12 +70,9 @@ const DoiTuong8Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
         const mon_List = [...new Set(temp_mon_List)];
         monTatCa_List = mon_List;
         monBatBuoc_List = mon_List.slice(0, 2);
-        monTuChon_List = mon_List.slice(2);
 
         return mon_List;
     }
-
-
     return (
         <ScrollView style={{ width: '100%' }}>
             < View style={styles.container} >
@@ -64,12 +91,14 @@ const DoiTuong8Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             onValueChange={(item) => {
                                 handleUpdateDATA("danhSachMon", layDanhSachMon(item))
                                 handleUpdateDATA("danhSachToHopMon", item.toHopMon)
+                                setMonTuChon_List(layDanhSachMon(item).slice(2));
                                 setNganh(item)
                             }}
                             style={[styles.inputFieldInput, {
                                 height: 50,
                                 width: '100%',
                                 marginLeft: 0,
+                                padding: 0,
                             }]}
                             dropdownIconColor="#333"
                         >
@@ -89,11 +118,11 @@ const DoiTuong8Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             <View style={{ width: '100%', marginTop: 15 }}>
                                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text>Tổ hợp môn xét tuyển:</Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 17}}>{nganh.toHopMon}</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{nganh.toHopMon}</Text>
                                 </View>
                                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text>Các môn khả dụng:</Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15}}>{layDanhSachMon(nganh).join(" - ")}</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{layDanhSachMon(nganh).join(" - ")}</Text>
                                 </View>
                             </View>
                         )}
@@ -101,7 +130,7 @@ const DoiTuong8Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
 
                     {
                         nganh == null ? null :
-                            <View style = {{width: '100%'}}>
+                            <View style={{ width: '100%' }}>
                                 <View style={styles.inputField}>
                                     <Text style={styles.inputFieldTitle}>Điểm Chứng Chỉ Quốc Tế</Text>
                                     <View style={[styles.inputFieldRow]}>
@@ -154,7 +183,23 @@ const DoiTuong8Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             </View>
                     }
                 </View>
-
+                <Modal animationType="fade"
+                    transparent={true}
+                    visible={diemTuChonModalVisible}
+                    onRequestClose={() => setDiemTuChonModalVisible(false)}>
+                    <Pressable style={styles.modalOverlay}
+                        onPress={() => setDiemTuChonModalVisible(false)}>
+                        <View style={styles.modalContent}>
+                            {monTuChon_List.map((choice, index) => (
+                                <TouchableOpacity key={index}
+                                    style={styles.choiceButton}
+                                    onPress={() => { handleDiemTuChonList(choice) }}>
+                                    <Text style={styles.choiceText}>{choice}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </Pressable>
+                </Modal>
             </View >
         </ScrollView>
     )

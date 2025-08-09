@@ -9,7 +9,7 @@ import axios from "axios";
 const ResultScreen = ({ params, route }) => {
 
     //ĐỊA CHỈ IP ------------------------------------//
-    const apiAddress = 'http://192.168.1.190:5555/api';
+    const apiAddress = 'http://192.168.1.39:5555/api';
     //-----------------------------------------------//
 
     const DATA_DiemHocLuc = route.params?.DATA_DiemHocLuc;

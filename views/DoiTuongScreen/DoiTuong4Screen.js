@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Text, View, ScrollView, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native';
 import { Picker } from "@react-native-picker/picker"
-
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { styles } from './DoiTuongScreenStyleSheet';
 
 import toHopMonData from './ToHopMon.json';
@@ -15,10 +15,15 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
             [index]: value,
         }));
     };
- 
+
     useEffect(() => {
         setDATA_DiemHocLuc(null)
         handleUpdateDATA('doiTuong', 4)
+        if (nganh != null) {
+            handleUpdateDATA('danhSachToHopMon', nganh.toHopMon)
+            handleUpdateDATA('danhSachMon', layDanhSachMon(nganh))
+        }
+
     }, []);
 
     const nganhXetTuyen = nganhXetTuyenData;
@@ -27,8 +32,34 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
     const [nganh, setNganh] = useState(null);
 
     let monBatBuoc_List = [];
-    let monTuChon_List = [];
+    const [monTuChon_List, setMonTuChon_List] = useState([]);
     let monTatCa_List = [];
+
+    const [monTuChon_List_Picked, setMonTuChon_List_Picked] = useState([]);
+
+    const [diemTuChonModalVisible, setDiemTuChonModalVisible] = useState(false);
+    const handleDiemTuChonList = (choice) => {
+        setDiemTuChonModalVisible(false);
+        setMonTuChon_List_Picked([...monTuChon_List_Picked, choice]);
+        let newList = removeMonTuChonFromList(choice)
+        setMonTuChon_List(newList)
+    };
+
+    function removeMonTuChonFromList(choice) {
+        const index = monTuChon_List.indexOf(choice);
+        if (index > -1) {
+            monTuChon_List.splice(index, 1);
+        }
+        return monTuChon_List;
+    }
+
+    function removeMonTuChonFromList_Picked(choice) {
+        const index = monTuChon_List_Picked.indexOf(choice);
+        if (index > -1) {
+            monTuChon_List_Picked.splice(index, 1);
+        }
+        return monTuChon_List_Picked;
+    }
 
     function layDanhSachMon(nganh) {
         if (!nganh) return [];
@@ -39,7 +70,6 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
         const mon_List = [...new Set(temp_mon_List)];
         monTatCa_List = mon_List;
         monBatBuoc_List = mon_List.slice(0, 2);
-        monTuChon_List = mon_List.slice(2);
 
         return mon_List;
     }
@@ -73,12 +103,14 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             onValueChange={(item) => {
                                 handleUpdateDATA("danhSachMon", layDanhSachMon(item))
                                 handleUpdateDATA("danhSachToHopMon", item.toHopMon)
+                                setMonTuChon_List(layDanhSachMon(item).slice(2));
                                 setNganh(item)
                             }}
                             style={[styles.inputFieldInput, {
                                 height: 50,
                                 width: '100%',
                                 marginLeft: 0,
+                                padding: 0,
                             }]}
                             dropdownIconColor="#333"
                         >
@@ -98,11 +130,11 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             <View style={{ width: '100%', marginTop: 15 }}>
                                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text>Tổ hợp môn xét tuyển:</Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 17}}>{nganh.toHopMon}</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 17 }}>{nganh.toHopMon}</Text>
                                 </View>
                                 <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
                                     <Text>Các môn khả dụng:</Text>
-                                    <Text style={{ fontWeight: 'bold', fontSize: 15}}>{layDanhSachMon(nganh).join(" - ")}</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15 }}>{layDanhSachMon(nganh).join(" - ")}</Text>
                                 </View>
                             </View>
                         )}
@@ -110,7 +142,7 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
 
                     {
                         nganh == null ? null :
-                            <View style = {{width: '100%'}}>
+                            <View style={{ width: '100%' }}>
                                 <View style={styles.inputField}>
                                     <Text style={styles.inputFieldTitle}>Điểm Năng Lực</Text>
                                     <View style={[styles.inputFieldRow]}>
@@ -145,9 +177,27 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                                             />
                                         </View>
                                     ))}
-                                    {monTuChon_List?.map((Mon, index) => (
+                                    {monTuChon_List_Picked?.map((Mon, index) => (
                                         <View key={`Mon-${index}`} style={styles.inputFieldRow}>
-                                            <Text style={[styles.inputFieldInputLabel, { flex: 1 }]}>Điểm Thi {Mon}</Text>
+                                            <View style={[styles.inputFieldRow, { flex: 1, marginBottom: 0 }]}>
+                                                <Text style={[styles.inputFieldInputLabel]}>Điểm Thi {Mon}</Text>
+                                                <TouchableOpacity style={[styles.inputFieldInput,
+                                                { flex: 0, width: 40, height: 40, justifyContent: 'center', alignItems: 'center' }]}
+                                                    onPress={() => {
+                                                        let newList = removeMonTuChonFromList_Picked(Mon)
+                                                        setMonTuChon_List_Picked(newList)
+                                                        setMonTuChon_List([...monTuChon_List, Mon]);
+                                                        if (`diemThi_${Mon}_TC` in DATA_DiemHocLuc) {
+                                                            delete DATA_DiemHocLuc[`diemThi_${Mon}_TC`]
+                                                            setDATA_DiemHocLuc(DATA_DiemHocLuc);
+                                                        }
+                                                    }}>
+                                                    <Text style={{ fontSize: 20, fontWeight: 'bold', textAlign: 'center' }}>
+                                                        <MaterialIcons name={'close'} size={20} color={'#a3a3a3ff'} />
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </View>
+
                                             <TextInput
                                                 style={[styles.inputFieldInput, { flex: 1 }]}
                                                 placeholder="00.00"
@@ -157,6 +207,15 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                                             />
                                         </View>
                                     ))}
+                                    {
+                                        monTuChon_List.length == 0 ? null :
+                                            <View style={[styles.inputFieldRow, { marginTop: 10 }]}>
+                                                <TouchableOpacity style={[styles.inputFieldInput, { flex: 1, marginLeft: 0, justifyContent: 'center', alignItems: 'center' }]}
+                                                    onPress={() => { setDiemTuChonModalVisible(true) }}>
+                                                    <Text>Thêm Điểm Môn Tự Chọn</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                    }
                                 </View>
 
                                 <View style={styles.inputField}>
@@ -203,6 +262,24 @@ const DoiTuong4Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                                 <TouchableOpacity key={index}
                                     style={styles.choiceButton}
                                     onPress={() => { handleChoiceSelect(choice), handleUpdateDATA('chungChiQuocTe', choice) }}>
+                                    <Text style={styles.choiceText}>{choice}</Text>
+                                </TouchableOpacity>
+                            ))}
+                        </View>
+                    </Pressable>
+                </Modal>
+
+                <Modal animationType="fade"
+                    transparent={true}
+                    visible={diemTuChonModalVisible}
+                    onRequestClose={() => setDiemTuChonModalVisible(false)}>
+                    <Pressable style={styles.modalOverlay}
+                        onPress={() => setDiemTuChonModalVisible(false)}>
+                        <View style={styles.modalContent}>
+                            {monTuChon_List.map((choice, index) => (
+                                <TouchableOpacity key={index}
+                                    style={styles.choiceButton}
+                                    onPress={() => { handleDiemTuChonList(choice) }}>
                                     <Text style={styles.choiceText}>{choice}</Text>
                                 </TouchableOpacity>
                             ))}
