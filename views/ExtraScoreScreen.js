@@ -1,6 +1,6 @@
-import { Picker } from "@react-native-picker/picker";
-import { useEffect, useState } from 'react';
-import { Image, Keyboard, Modal, Platform, Pressable, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { Text, View, StyleSheet, Image, TextInput, TouchableOpacity, Modal, Pressable, Keyboard, Platform, ScrollView } from 'react-native';
+import { Picker } from "@react-native-picker/picker"
 
 import { useNavigation } from '@react-navigation/native';
 

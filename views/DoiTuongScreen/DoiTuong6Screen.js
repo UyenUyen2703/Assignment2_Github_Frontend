@@ -1,10 +1,17 @@
+<<<<<<< HEAD
 import { Picker } from "@react-native-picker/picker";
 import { useEffect, useState } from 'react';
 import { ScrollView, Text, TextInput, View } from 'react-native';
+=======
+import React, { useState, useEffect } from 'react';
+import { Text, View, ScrollView, TextInput, TouchableOpacity, Modal, Pressable } from 'react-native';
+import { Picker } from "@react-native-picker/picker"
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
 
 import { styles } from './DoiTuongScreenStyleSheet';
 
 import toHopMonData from './ToHopMon.json';
+<<<<<<< HEAD
 
 const DoiTuong6Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
     const [chuongTrinhHoc, setChuongTrinhHoc] = useState(0);
@@ -38,6 +45,46 @@ const DoiTuong6Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
     const tatCaMon = [...new Set([...monBatBuoc, ...monTuChon])];
     console.log("tatCaMon", tatCaMon);
 
+=======
+import nganhXetTuyenData from './NganhXetTuyen.json';
+
+const DoiTuong6Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
+
+    const handleUpdateDATA = (index, value) => {
+        setDATA_DiemHocLuc(prev => ({
+            ...prev,
+            [index]: value,
+        }));
+    };
+ 
+    useEffect(() => {
+        setDATA_DiemHocLuc(null)
+        handleUpdateDATA('doiTuong', 6)
+    }, []);
+
+    const nganhXetTuyen = nganhXetTuyenData;
+    const toHopMon = toHopMonData;
+
+    const [nganh, setNganh] = useState(null);
+
+    let monBatBuoc_List = [];
+    let monTuChon_List = [];
+    let monTatCa_List = [];
+
+    function layDanhSachMon(nganh) {
+        if (!nganh) return [];
+        const toHopMon_List = nganh.toHopMon.split(' - ');
+        const temp_mon_List = toHopMon_List.flatMap(id =>
+            toHopMon[id] || []
+        );
+        const mon_List = [...new Set(temp_mon_List)];
+        monTatCa_List = mon_List;
+        monBatBuoc_List = mon_List.slice(0, 2);
+        monTuChon_List = mon_List.slice(2);
+
+        return mon_List;
+    }
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
 
 
     return (
@@ -50,6 +97,7 @@ const DoiTuong6Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
 
                 <View style={styles.body}>
                     <View style={styles.inputField}>
+<<<<<<< HEAD
                         {/* Chương trình học */}
                         <Text style={styles.inputFieldTitle}>Chương Trình Học</Text>
 
@@ -78,6 +126,16 @@ const DoiTuong6Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             onValueChange={(item) => {
                                 setNganh(item);
                                 setToHopXetTuyen(0);
+=======
+                        <Text style={styles.inputFieldTitle}>Ngành Xét Tuyển</Text>
+
+                        <Picker
+                            selectedValue={nganh}
+                            onValueChange={(item) => {
+                                handleUpdateDATA("danhSachMon", layDanhSachMon(item))
+                                handleUpdateDATA("danhSachToHopMon", item.toHopMon)
+                                setNganh(item)
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
                             }}
                             style={[styles.inputFieldInput, {
                                 height: 50,
@@ -86,15 +144,27 @@ const DoiTuong6Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             }]}
                             dropdownIconColor="#333"
                         >
+<<<<<<< HEAD
                             <Picker.Item label="-- Chọn mã ngành --" value={0} />
 
                             {nganhList.map((item, idx) => (
                                 <Picker.Item key={`nganh-${item.maNganh}-${idx}`} label={`${item.maNganh} - ${item.tenNganh}`} value={idx} />
 
+=======
+                            <Picker.Item label="-- Chọn mã ngành --" value={null} />
+
+                            {nganhXetTuyen.map((item) => (
+                                <Picker.Item
+                                    key={item.id}
+                                    label={`${item.id} - ${item.nganh}`}
+                                    value={item}
+                                />
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
                             ))}
 
                         </Picker>
 
+<<<<<<< HEAD
                         {/* Chọn tổ hợp môn xét tuyển */}
                         <Text style={styles.inputFieldTitle}>Tổ Hợp Môn Xét Tuyển</Text>
                         <Picker
@@ -188,6 +258,83 @@ const DoiTuong6Screen = ({ DATA_DiemHocLuc, setDATA_DiemHocLuc }) => {
                             ))}
                         </View>
                     )}
+=======
+                        {nganh && (
+                            <View style={{ width: '100%', marginTop: 15 }}>
+                                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text>Tổ hợp môn xét tuyển:</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 17}}>{nganh.toHopMon}</Text>
+                                </View>
+                                <View style={{ width: '100%', flexDirection: 'row', justifyContent: 'space-between' }}>
+                                    <Text>Các môn khả dụng:</Text>
+                                    <Text style={{ fontWeight: 'bold', fontSize: 15}}>{layDanhSachMon(nganh).join(" - ")}</Text>
+                                </View>
+                            </View>
+                        )}
+                    </View>
+                    {
+                        nganh == null ? null :
+                            <View style = {{width: '100%'}}>
+                                <View style={styles.inputField}>
+                                    <Text style={styles.inputFieldTitle}>Điểm Tốt Nghiệp THPT</Text>
+                                    {monBatBuoc_List?.map((Mon, index) => (
+                                        <View key={`Mon-${index}`} style={styles.inputFieldRow}>
+                                            <Text style={[styles.inputFieldInputLabel, { flex: 1 }]}>Điểm Thi {Mon} *</Text>
+                                            <TextInput
+                                                style={[styles.inputFieldInput, { flex: 1 }]}
+                                                placeholder="00.00"
+                                                placeholderTextColor="#969696"
+                                                keyboardType="numeric"
+                                                onChangeText={(text) => handleUpdateDATA(`diemThi_${Mon}`, parseFloat(text))}
+                                            />
+                                        </View>
+                                    ))}
+                                    {monTuChon_List?.map((Mon, index) => (
+                                        <View key={`Mon-${index}`} style={styles.inputFieldRow}>
+                                            <Text style={[styles.inputFieldInputLabel, { flex: 1 }]}>Điểm Thi {Mon}</Text>
+                                            <TextInput
+                                                style={[styles.inputFieldInput, { flex: 1 }]}
+                                                placeholder="00.00"
+                                                placeholderTextColor="#969696"
+                                                keyboardType="numeric"
+                                                onChangeText={(text) => handleUpdateDATA(`diemThi_${Mon}_TC`, parseFloat(text))}
+                                            />
+                                        </View>
+                                    ))}
+                                </View>
+
+                                <View style={styles.inputField}>
+                                    <View style={styles.inputFieldRow}>
+                                        <Text style={[styles.inputFieldTitle, { flex: 3, marginBottom: 5 }]}>Điểm Học THPT</Text>
+                                        {[10, 11, 12].map((Mon, index) => (
+                                            <Text key={`Lop-${index}`} style={[styles.inputFieldTableLabel, { flex: 1 }]}>{Mon}</Text>
+                                        ))}
+                                    </View>
+
+                                    {monTatCa_List.map((mon) => (
+                                        <View key={`diemTBLop-${mon}`} style={styles.inputFieldRow}>
+                                            <Text style={[styles.inputFieldInputLabel, { flex: 3 }]}>
+                                                Điểm TB {mon}
+                                            </Text>
+                                            {
+                                                [10, 11, 12].map((lop) => (
+                                                    <TextInput
+                                                        key={`diemMon_${mon}_${lop}`}
+                                                        style={[styles.inputFieldInput, { flex: 1 }]}
+                                                        placeholder="00.00"
+                                                        placeholderTextColor="#969696"
+                                                        keyboardType="numeric"
+                                                        onChangeText={(text) => handleUpdateDATA(`diemTB_${mon}_${lop}`, parseFloat(text))}
+                                                    />
+                                                ))
+                                            }
+                                        </View>
+                                    ))}
+
+                                </View>
+                            </View>
+                    }
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
 
                 </View>
             </View>

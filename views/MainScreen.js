@@ -16,6 +16,7 @@ import DoiTuong8Screen from './DoiTuongScreen/DoiTuong8Screen';
 const MainScreen = ({ navigation, }) => {
     const DefaultScreen = () => <View style={styles.screen}>
         <Text style={styles.titleText}>Hãy Chọn Đối Tượng Xét Tuyển</Text>
+<<<<<<< HEAD
         <View style={styles.descriptionModel}>
             <Text style={styles.titleText}>Các Đối Tượng Xét Tuyển</Text>
             <View style={styles.text}>
@@ -52,6 +53,9 @@ const MainScreen = ({ navigation, }) => {
             </View>
         </View>
     </View>
+=======
+    </View>;
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
 
     const isDataComplete = (data) => {
         return Object.values(data).every(
@@ -281,11 +285,18 @@ const styles = StyleSheet.create({
         flex: 12,
         alignItems: 'center',
         justifyContent: 'flex-start',
+<<<<<<< HEAD
         paddingTop: 10,
+=======
+
+        paddingTop: 10,
+
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
         backgroundColor: '#dbdfe8ff'
     },
     titleText: {
         textAlign: 'center',
+<<<<<<< HEAD
         fontSize: 16,
         fontWeight: 'bold',
         color: '#f62c65ff',
@@ -327,6 +338,13 @@ const styles = StyleSheet.create({
         shadowOpacity: 0.3,
         shadowRadius: 5,
         elevation: 10,
+=======
+
+        fontSize: 16,
+        fontWeight: 'bold',
+
+        color: '#f62c65ff'
+>>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
     },
     //----------------------------------------------------//
 
