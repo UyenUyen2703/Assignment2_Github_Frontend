@@ -46,17 +46,10 @@ export const styles = StyleSheet.create({
     // //----------------------------------------------------//
 
     inputField: {
-<<<<<<< HEAD
-        flexDirection: 'column',
-        alignItems: 'flex-start',
-        justifyContent: 'flex-start',
-        backgroundColor:'red',
-=======
         flexDirection: 'collumn',
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
 
->>>>>>> 2f0c3a0462fe1bc041a4c41bdd2251dd4869524f
         marginBottom: 5,
         paddingBottom: 20,
         padding: 10,
